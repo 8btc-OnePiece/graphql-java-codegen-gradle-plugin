@@ -38,6 +38,10 @@ public class GraphqlCodegenGradleTask extends DefaultTask {
     private Boolean generateToString = false;
     private String jsonConfigurationFile;
 
+    private boolean generateSingleApi;
+    private boolean needDataFetchingEnvironmentParamInSingleApi;
+    private Map<String, String> customGenericsMapping;
+
     @TaskAction
     public void generate() throws Exception {
         MappingConfig mappingConfig = new MappingConfig();
@@ -54,7 +58,12 @@ public class GraphqlCodegenGradleTask extends DefaultTask {
         mappingConfig.setGenerateEqualsAndHashCode(generateEqualsAndHashCode);
         mappingConfig.setGenerateToString(generateToString);
 
-        new GraphqlCodegen(graphqlSchemaPaths, outputDir, mappingConfig, buildJsonSupplier()).generate();
+        mappingConfig.setGenerateSingleApi(generateSingleApi);
+        mappingConfig.setNeedDataFetchingEnvironmentParamInSingleApi(needDataFetchingEnvironmentParamInSingleApi);
+        mappingConfig.setCustomGenericsMapping(
+                customGenericsMapping != null ? customGenericsMapping : new HashMap<>());
+
+        new GraphqlCodegen(graphqlSchemaPaths.toArray(new String[]{}), outputDir, mappingConfig, buildJsonSupplier()).generate();
     }
 
     private MappingConfigSupplier buildJsonSupplier() {
@@ -65,6 +74,38 @@ public class GraphqlCodegenGradleTask extends DefaultTask {
     }
 
     @Input
+    @Optional
+    public Map<String, String> getCustomGenericsMapping() {
+        return customGenericsMapping;
+    }
+
+    public void setCustomGenericsMapping(Map<String, String> customGenericsMapping) {
+        this.customGenericsMapping = customGenericsMapping;
+    }
+
+    @Input
+    @Optional
+    public boolean isGenerateSingleApi() {
+        return generateSingleApi;
+    }
+
+    public void setGenerateSingleApi(boolean generateSingleApi) {
+        this.generateSingleApi = generateSingleApi;
+    }
+
+
+    @Input
+    @Optional
+    public boolean isNeedDataFetchingEnvironmentParamInSingleApi() {
+        return needDataFetchingEnvironmentParamInSingleApi;
+    }
+
+    public void setNeedDataFetchingEnvironmentParamInSingleApi(boolean needDataFetchingEnvironmentParamInSingleApi) {
+        this.needDataFetchingEnvironmentParamInSingleApi = needDataFetchingEnvironmentParamInSingleApi;
+    }
+
+    @Input
+    @Optional
     public List<String> getGraphqlSchemaPaths() {
         return graphqlSchemaPaths;
     }

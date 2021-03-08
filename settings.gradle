@@ -2,6 +2,13 @@ pluginManagement {
     repositories {
         mavenLocal()
         gradlePluginPortal()
+        maven {
+            url = uri('http://nexus-server:8081/repository/maven-public')
+            credentials {
+                username "$nexusUser"
+                password "$nexusPassword"
+            }
+        }
     }
 }
 
